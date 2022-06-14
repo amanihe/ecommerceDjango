@@ -6,12 +6,17 @@ from django.db import models
 #  C_Name = models.CharField(max_length=150)
 #  C_Email = models.EmailField()
 
-
+STATUT_CHOICES = (
+    ('autre', 'autre'),
+    ('professionnel', 'Professionnel'),
+    ('personnel', 'Personnel')
+)
 class T_User(models.Model):
     U_Id = models.AutoField(primary_key=True)
     U_FirstName = models.CharField(max_length=150)
     U_LastName = models.CharField(max_length=150)
     U_Tel = models.CharField(max_length=150)
+    U_Statut =models.CharField(max_length=120, choices=STATUT_CHOICES)
     U_Email = models.EmailField()
     U_Pwd = models.CharField(max_length=150)
     U_Admin = models.BooleanField()

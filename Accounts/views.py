@@ -53,6 +53,15 @@ def Crud_User(request, id=0):
 
 
 @csrf_exempt
+def get_Fnx(request, Id=0):
+    try:
+        user = T_User.objects.filter(U_Supplier=True)
+        if request.method == 'GET':
+            serializer = S_User(user, many=True)
+            return JsonResponse(serializer.data, safe=False)
+    except:
+        return HttpResponse(status=404)
+@csrf_exempt
 def get_User(request, Id):
     try:
         user = T_User.objects.filter(U_Id=Id)

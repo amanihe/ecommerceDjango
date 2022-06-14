@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from Order.models import T_Facture, T_Order
 from Order.serializers import *
-#from django.core.mail import send_mail
+# from django.core.mail import send_mail
 
 from django.core.files.storage import default_storage
 from django.conf import settings
@@ -199,25 +199,25 @@ def get_OrderHistory(request, orderId):
 
         T = {}
 
-        
         X = {}
         Z = []
         allOrder = T_Order.objects.get(Ord_Id=orderId)
         ordSerialize = OrderSerializer(allOrder)
-        #for i in ordSerialize.data:
+        # for i in ordSerialize.data:
         print(ordSerialize.data['Ord_Id'])
         T['Ord_Id'] = ordSerialize.data['Ord_Id']
-        T['Ord_Date'] = ordSerialize.data['Ord_Date'][ : 10]
+        T['Ord_Date'] = ordSerialize.data['Ord_Date'][: 10]
         T['Ord_Status'] = ordSerialize.data['Ord_Status']
         print(T)
         # if(['Ord_Type']=='customer'):
-        allOrderLign = T_OrderLigne.objects.filter(Order=ordSerialize.data['Ord_Id'])
+        allOrderLign = T_OrderLigne.objects.filter(
+            Order=ordSerialize.data['Ord_Id'])
         ordLignSerialize = OrderLigneSerializer(allOrderLign, many=True)
-        X={}
+        X = {}
         V = []
         for j in ordLignSerialize.data:
             P = {}
-                
+
             print(j['Product'])
             product = T_Product.objects.get(Prod_Id=j['Product'])
             S_Prod = S_Product(product)
@@ -238,7 +238,38 @@ def get_OrderHistory(request, orderId):
 
 
 @csrf_exempt
-def edit_OrderLigne(request, Id):
+def get_Best_product(request):
+    try:
+        orders = T_Order.objects.all()
+        if request.method == 'GET':
+            serializer = OrderSerializer(orders, many=True)
+           # print(serializer.data)
+            List = []
+            V = []
+            for i in serializer.data:
+                allOrderLign = T_OrderLigne.objects.filter(
+                    Order=i['Ord_Id'],)
+                ordLignSerialize = OrderLigneSerializer(
+                    allOrderLign, many=True)
+
+                for L in ordLignSerialize.data:
+                    P = {}
+                    product = T_Product.objects.get(Prod_Id=L['Product'])
+                    S_Prod = S_Product(product)
+                    P['Prod_Name'] = S_Prod.data['Prod_Name']
+                    P['date'] = i['Ord_Date'][: 7]
+                    P['Qte'] = L['Ord_Qte']
+                   # print(S_Prod.data['Prod_Name'])
+                    V.append(P)
+
+            print(V)
+            return JsonResponse(V, safe=False)
+    except:
+        return HttpResponse(status=404)
+
+
+@csrf_exempt
+def edit_OrderLigneQte(request, Id):
 
     Vqte = JSONParser().parse(request)
     item = T_OrderLigne.objects.get(OrdLign_Id=Id)

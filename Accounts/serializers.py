@@ -6,7 +6,7 @@ from .models import *
 class S_User(serializers.ModelSerializer):
     class Meta:
         model = T_User
-        fields = ("U_Id", "U_FirstName","U_LastName","U_Tel", "U_Email","U_Pwd","U_Admin","U_Client","U_Supplier")
+        fields = ("U_Id", "U_FirstName","U_LastName","U_Tel","U_Statut", "U_Email","U_Pwd","U_Admin","U_Client","U_Supplier")
 class S_Address(serializers.ModelSerializer):
     class Meta:
         model = T_Address
